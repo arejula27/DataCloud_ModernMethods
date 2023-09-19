@@ -1,52 +1,35 @@
 package main
 
 import (
-	"fmt"
-	"net"
-	"net/rpc"
-	"net/rpc/jsonrpc"
+	"log"
+	"os"
 	"strings"
+
+	datacloud "github.com/arejula27/dataCloud"
 )
 
 type ConverterService struct{}
 
-type Request struct {
-	TsvData string
-}
+func (c *ConverterService) TsvToCsv(request *datacloud.Request, response *datacloud.Response) error {
 
-type Response struct {
-	CsvData string
-}
-
-func (c *ConverterService) TsvToCsv(request *Request, response *Response) error {
-
-	csvData := strings.ReplaceAll(request.TsvData, "\t", ",")
-	// Reemplazar las nuevas líneas por saltos de línea
-	csvData = strings.ReplaceAll(csvData, "\n", "\r\n")
-
-	response.CsvData = csvData
-	return nil
-}
-
-func main() {
-	csvService := new(ConverterService)
-	rpc.Register(csvService)
-
-	listener, err := net.Listen("tcp", ":1234")
+	//Read file in shared storage
+	fileContent, err := os.ReadFile(request.Filename)
 	if err != nil {
-		fmt.Println("Error al abrir el puerto 1234:", err)
-		return
-	}
-	defer listener.Close()
+		log.Println("Error while reading file:", err)
+		return err
 
-	fmt.Println("Servicio RPC CsvService escuchando en el puerto 1234...")
-
-	for {
-		conn, err := listener.Accept()
-		if err != nil {
-			fmt.Println("Error al aceptar la conexión:", err)
-			continue
-		}
-		go jsonrpc.ServeConn(conn)
 	}
+	fileContentStr := string(fileContent)
+
+	//format the file content
+	csvData := strings.ReplaceAll(fileContentStr, "\t", ",")
+
+	newFileName := strings.Replace(request.Filename, ".tsv", ".csv")
+	os.WriteFile(newFileName, []byte(csvData), 0644)
+	if err != nil {
+		log.Println("Error while writing file:", err)
+		return err
+
+	}
+	return nil
 }
