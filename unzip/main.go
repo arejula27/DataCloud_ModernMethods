@@ -8,17 +8,17 @@ import (
 )
 
 func main() {
-	csvService := new(ConverterService)
-	rpc.Register(csvService)
+	unzipService := new(UnzipService)
+	rpc.Register(unzipService)
 
 	listener, err := net.Listen("tcp", ":1234")
 	if err != nil {
-		fmt.Println("Service RPC CsvService listening at port 1234")
+		fmt.Println("Error while opening port 1234:")
 		return
 	}
 	defer listener.Close()
 
-	fmt.Println("Servicio RPC CsvService escuchando en el puerto 1234...")
+	fmt.Println("Service RPC CsvService listening at port 1234")
 
 	for {
 		conn, err := listener.Accept()
