@@ -8,13 +8,12 @@ import (
 )
 
 func main() {
-	csvService := new(ConverterService)
-	rpc.Register(csvService)
+	splitService := new(SplitService)
+	rpc.Register(splitService)
 
 	listener, err := net.Listen("tcp", ":1234")
 	if err != nil {
 		fmt.Println("Error opening port 1234")
-
 		return
 	}
 	defer listener.Close()
