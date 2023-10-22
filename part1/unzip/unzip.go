@@ -3,7 +3,7 @@ package main
 import (
 	"os/exec"
 
-	datacloud "github.com/arejula27/dataCloud"
+	datacloud "github.com/arejula27/dataCloud/part1"
 )
 
 type UnzipService struct{}

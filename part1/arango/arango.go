@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	datacloud "github.com/arejula27/dataCloud"
+	datacloud "github.com/arejula27/dataCloud/part1"
 )
 
 type ArangoService struct{}

@@ -4,12 +4,12 @@ import (
 	"log"
 	"os"
 
-	datacloud "github.com/arejula27/dataCloud"
+	datacloud "github.com/arejula27/dataCloud/part1"
 )
 
-type TransformService struct{}
+type ArangoService struct{}
 
-func (c *TransformService) Transform(request *datacloud.Request, response *datacloud.Response) error {
+func (c *ArangoService) Transform(request *datacloud.Request, response *datacloud.Response) error {
 
 	//Read file in shared storage
 	_, err := os.ReadFile(request.Filename)

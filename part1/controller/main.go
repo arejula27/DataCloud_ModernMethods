@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/rpc/jsonrpc"
 
-	datacloud "github.com/arejula27/dataCloud"
+	datacloud "github.com/arejula27/dataCloud/part1"
 )
 
 func unzip(filename string) error {

@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	datacloud "github.com/arejula27/dataCloud"
+	datacloud "github.com/arejula27/dataCloud/part1"
 )
 
 type ConverterService struct{}
