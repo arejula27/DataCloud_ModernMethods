@@ -69,6 +69,47 @@ func split(filename string) ([]string, error) {
 
 }
 
+func transform(filename string) error {
+	// Conect to  RPC server  at port 1234
+	client, err := jsonrpc.Dial("tcp", "converter:1234")
+	if err != nil {
+		fmt.Println("Error while conecting to RPC server:", err)
+		return err
+	}
+	defer client.Close()
+
+	// Call Split
+	response := datacloud.Response{}
+	request := datacloud.Request{Filename: filename}
+	err = client.Call("TransformService.Transform", &request, &response)
+	if err != nil {
+		fmt.Println("Error calling remote method:", err)
+		return err
+	}
+	return nil
+
+}
+
+func arango(filename string) error {
+	// Conect to  RPC server  at port 1234
+	client, err := jsonrpc.Dial("tcp", "converter:1234")
+	if err != nil {
+		fmt.Println("Error while conecting to RPC server:", err)
+		return err
+	}
+	defer client.Close()
+
+	// Call Split
+	response := datacloud.Response{}
+	request := datacloud.Request{Filename: filename}
+	err = client.Call("ArangoService.Arango", &request, &response)
+	if err != nil {
+		fmt.Println("Error calling remote method:", err)
+		return err
+	}
+	return nil
+
+}
 func main() {
 
 	// Extact file
@@ -78,5 +119,9 @@ func main() {
 
 	//Split
 	files, _ := split("file.csv")
+	for _, file := range files {
+		transform(file)
+		arango(file)
+	}
 
 }

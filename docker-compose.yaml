@@ -1,0 +1,37 @@
+version: "3"
+services:
+  unizip:
+    image: unizip_datacloud:latest
+    ports:
+      - "1234:1234"
+    volumes:
+      - shared-volume:/app/data
+
+  to_csv:
+    image: to_csv_datacloud:latest
+    ports:
+      - "1235:1234"
+    volumes:
+      - shared-volume:/app/data
+
+  split:
+    image: split_datacloud:latest
+    ports:
+      - "1236:1234"
+    volumes:
+      - shared-volume:/app/data
+  transform:
+    image: transform_datacloud:latest
+    ports:
+      - "1237:1234"
+    volumes:
+      - shared-volume:/app/data
+  to_arango:
+    image: to_arango_datacloud:latest
+    ports:
+      - "1238:1234"
+    volumes:
+      - shared-volume:/app/data
+
+volumes:
+  shared-volume:

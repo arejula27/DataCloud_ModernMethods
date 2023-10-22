@@ -24,7 +24,7 @@ func (c *ConverterService) TsvToCsv(request *datacloud.Request, response *datacl
 	//format the file content
 	csvData := strings.ReplaceAll(fileContentStr, "\t", ",")
 
-	newFileName := strings.Replace(request.Filename, ".tsv", ".csv")
+	newFileName := strings.Replace(request.Filename, ".tsv", ".csv", 1)
 	os.WriteFile(newFileName, []byte(csvData), 0644)
 	if err != nil {
 		log.Println("Error while writing file:", err)

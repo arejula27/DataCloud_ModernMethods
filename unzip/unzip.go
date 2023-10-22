@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"os/exec"
 
 	datacloud "github.com/arejula27/dataCloud"
@@ -17,7 +16,7 @@ func (c *UnzipService) Unzip(request *datacloud.Request, response *datacloud.Res
 	// Ejecutar el comando
 	err := cmd.Run()
 	if err != nil {
-		log.Println("Error while running'unzip': %v\n%s", err, output)
+
 		return err
 	}
 
