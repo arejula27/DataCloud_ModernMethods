@@ -13,5 +13,8 @@ RUN go build -o main
 # Expose port 1234
 EXPOSE 1234
 
-# Run the main command when the container starts
-CMD ["./main"]
+# Define an environment variable for the file path argument
+ENV FILE_PATH_ARG=""
+
+# Run the main command with the specified argument when the container starts
+CMD ["./main", "$FILE_PATH_ARG"]

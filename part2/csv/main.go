@@ -1,32 +1,35 @@
 package main
 
 import (
-	"fmt"
-	"net"
-	"net/rpc"
-	"net/rpc/jsonrpc"
+	"log"
+	"os"
+	"strings"
 )
 
 func main() {
-	csvService := new(ConverterService)
-	rpc.Register(csvService)
 
-	listener, err := net.Listen("tcp", ":1234")
+	file_path := os.Args[1]
+	fileContent, err := os.ReadFile(file_path)
 	if err != nil {
-		fmt.Println("Error opening port 1234")
+		log.Fatal("Error while reading file:", err)
 
-		return
 	}
-	defer listener.Close()
 
-	fmt.Println("Service RPC CsvService listening at port 1234")
+	//format the file content
+	fileContentStr := string(fileContent)
 
-	for {
-		conn, err := listener.Accept()
-		if err != nil {
-			fmt.Println("Error while accepting the connection :", err)
-			continue
-		}
-		go jsonrpc.ServeConn(conn)
+	//format the file content
+	csvData := strings.ReplaceAll(fileContentStr, "\t", ",")
+	filename := ""
+	os.WriteFile(filename, []byte(csvData), 0644)
+	if err != nil {
+		log.Fatal("Error while writing file:", err)
+
 	}
+	os.WriteFile("/p1.txt", []byte(filename), 0644)
+	if err != nil {
+		log.Fatal("Error while writing file:", err)
+
+	}
+
 }

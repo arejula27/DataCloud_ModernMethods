@@ -1,0 +1,144 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: datacloud
+spec:
+  entrypoint: main
+  arguments:
+    parameters:
+    - name: file-path
+  - name: main
+    dag:
+      tasks:
+      - name: unzip 
+        template: unzip-step
+        arguments:
+          parameters:
+          - name: file_path
+            value: "{{workflow.parameters.workflow-param-1}}"
+      - name: csv
+        dependencies: [unzip]
+        template: csv-step
+        arguments:
+          parameters:
+          - name: file_path
+            value: "{{tasks.step-A.outputs.parameters.file_path}}"
+          artifacts:
+          - name: file
+            from: "{{tasks.step-A.outputs.artifacts.file}}"
+      - name: split
+        dependencies: [csv]
+        template: split-step
+        arguments:
+          parameters:
+          - name: file_path
+            value: "{{tasks.step-A.outputs.parameters.file_path}}"
+          artifacts:
+          - name: file
+            from: "{{tasks.step-A.outputs.artifacts.file}}"          
+      - name: transform
+        dependencies: [split]
+        template: transform-step
+        arguments:
+          parameters:
+          - name: file_path
+            value: "{{tasks.step-A.outputs.parameters.file_path}}"
+          artifacts:
+          - name: file
+            from: "{{tasks.step-A.outputs.artifacts.file}}"
+      - name: arango
+        dependencies: [transform]
+        template: arango-step
+        arguments:
+          parameters:
+          - name: file_path
+            value: "{{tasks.step-A.outputs.parameters.file_path}}"
+          artifacts:
+          - name: file
+            from: "{{tasks.step-A.outputs.artifacts.file}}"   
+  - name: unzip-step
+    inputs:
+      parameters:
+        - name: file_path
+    container:
+      image: unizip_datacloud:latest
+      command: [main]
+      source: |
+          echo "{{inputs.parameters.file_path}}"
+    outputs:
+      parameters:
+        - name: file_path
+          valueFrom:
+          path: /p1.txt
+      artifacts:
+        - name: file
+          path: /some-directory
+  - name: csv-step
+    inputs:
+      parameters:
+        - name: file_path
+    outputs:
+      parameters:
+        - name: file_path
+          valueFrom:
+          path: /p1.txt
+      artifacts:
+        - name: file
+          path: /some-directory
+    container:
+      image: to_csv_datacloud:latest
+      command: [main]
+      source: |
+          echo "{{inputs.parameters.file_path}}"
+  - name: split-step
+    inputs:
+      parameters:
+        - name: file_path
+    outputs:
+      parameters:
+        - name: file_path
+          valueFrom:
+          path: /p1.txt
+      artifacts:
+        - name: files
+          path: /some-directory
+    container:
+      image: split_datacloud
+      command: [main]
+      source: |
+          echo "{{inputs.parameters.file_path}}"
+  - name: transform-step
+    inputs:
+      parameters:
+        - name: file_path
+    outputs:
+      parameters:
+        - name: file_path
+          valueFrom:
+          path: /p1.txt
+      artifacts:
+        - name: file
+          path: /some-directory
+    container:
+      image: transform_datacloud:latest
+      command: [main]
+      source: |
+          echo "{{inputs.parameters.file_path}}"
+  - name: arango-step
+    inputs:
+      parameters:
+        - name: file_path
+    outputs:
+      parameters:
+        - name: file_path
+          valueFrom:
+          path: /p1.txt
+      artifacts:
+        - name: file
+        path: /some-directory
+    container:
+      image: to_arango_datacloud:latest
+      command: [main]
+      source: |
+          echo "{{inputs.parameters.file_path}}"
+
