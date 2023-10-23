@@ -1,0 +1,54 @@
+Pipeline Root {
+	communicationMedium: medium 
+	steps:
+		- data-processing step Unzip
+			implementation: container-implementation image: 'datacloud_unizip'
+			environmentParameters: {
+
+			}
+			resourceProvider: 
+			executionRequirement:
+				hardRequirements:					
+
+
+		- data-source step TSVtoCSV
+			implementation: container-implementation image: 'datacloud_csv'
+			environmentParameters: {
+
+			}
+			resourceProvider: 
+			executionRequirement:
+				hardRequirements:					
+			previous: [Unzip]
+
+		- data-processing step Split
+			implementation: container-implementation image: 'arraying/ds3'
+			environmentParameters: {
+
+			}
+			resourceProvider: 
+			executionRequirement:
+				hardRequirements:					
+			previous: [TSVtoCSV]
+
+		- data-source step Transform
+			implementation: container-implementation image: 'datacloud_transform'
+			environmentParameters: {
+
+			}
+			resourceProvider: 
+			executionRequirement:
+				hardRequirements:					
+			previous: [Split]
+
+		- data-source step ToArango
+			implementation: container-implementation image: 'datacloud_arango'
+			environmentParameters: {
+
+			}
+			resourceProvider: 
+			executionRequirement:
+				hardRequirements:					
+			previous: [Transform]
+}
+
